@@ -20,15 +20,20 @@
     var CONFIG = {"hostname":"mingzark.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="小手一撑 与世无争">
-<meta property="og:url" content="https://mingzark.github.io/tags/nacos/index.html">
+  <meta name="description" content="为解决前端跨域问题，使用了nginx反向代理做处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nginx反向代理dns缓存问题">
+<meta property="og:url" content="https://mingzark.github.io/2020/12/16/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86dns%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/index.html">
 <meta property="og:site_name" content="小手一撑 与世无争">
+<meta property="og:description" content="为解决前端跨域问题，使用了nginx反向代理做处理">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-16T07:36:05.000Z">
+<meta property="article:modified_time" content="2020-12-16T08:18:27.000Z">
 <meta property="article:author" content="赵明">
+<meta property="article:tag" content="nginx">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://mingzark.github.io/tags/nacos/">
+<link rel="canonical" href="https://mingzark.github.io/2020/12/16/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86dns%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/">
 
 
 <script id="page-configurations">
@@ -36,12 +41,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>标签: nacos | 小手一撑 与世无争</title>
+  <title>nginx反向代理dns缓存问题 | 小手一撑 与世无争</title>
   
 
 
@@ -178,51 +183,126 @@
         <div class="content-wrap">
           
 
-          <div class="content tag">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h2 class="collection-header">nacos
-          <small>标签</small>
-        </h2>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mingzark.github.io/2020/12/16/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86dns%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="赵明">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小手一撑 与世无争">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          nginx反向代理dns缓存问题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-12-16 15:36:05 / 修改时间：16:18:27" itemprop="dateCreated datePublished" datetime="2020-12-16T15:36:05+08:00">2020-12-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/centos/" itemprop="url" rel="index"><span itemprop="name">centos</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/centos/nginx/" itemprop="url" rel="index"><span itemprop="name">nginx</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2020</span>
+        <p>为解决前端跨域问题，使用了nginx反向代理做处理</p>
+<a id="more"></a>
+
+<blockquote>
+<p>location ^~ /public_static/ {<br>   proxy_pass <a target="_blank" rel="noopener" href="https://example.com/">https://example.com</a>;<br>}</p>
+</blockquote>
+<h1 id="问题简介"><a href="#问题简介" class="headerlink" title="问题简介"></a>问题简介</h1><blockquote>
+<p>​        example.com为cdn域名，ip是动态解析的，上线几天后，发现网站资源加载不出来，查看nginx日志发现资源全部超时了。查询nginx相关文档，确认nginx在启动加载配置文件时，会把域名接信息成ip，然后把IP缓存起来，以后会一直使用解析到的IP并且不会再更改，除非重新启动Nginx，Nginx才会重新解析域名。</p>
+</blockquote>
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><h2 id="第一种-使用nginx的resolver"><a href="#第一种-使用nginx的resolver" class="headerlink" title="第一种 使用nginx的resolver"></a>第一种 使用nginx的resolver</h2><ul>
+<li><p>默认nginx会使用/etc/resolv.conf下的域名服务器进行解析</p>
+</li>
+<li><p>可以通过在nginx配置文件中的http部分或者server部分设定如下配置</p>
+<blockquote>
+<p>server {</p>
+<p>​    resolver 100.100.2.136 100.100.2.138 valid=3000s;</p>
+<p>​    resolver_timeout 3s;</p>
+<p>}</p>
+</blockquote>
+</li>
+<li><p>resolver 后面指定DNS服务器，可以指定多个，空格隔开</p>
+</li>
+<li><p>valid设置DNS缓存失效时间</p>
+</li>
+<li><p>resolver_timeout 指定解析域名时，DNS服务器的超时时间，建议3秒左右</p>
+</li>
+</ul>
+<blockquote>
+<p>​        当resolver 后面跟多个DNS服务器时，一定要保证这些DNS服务器都是有效的，因为这种是负载均衡模式的，当DNS记录失效了(超过valid时间)，首先由第一个DNS服务器去解析，下一次继续失效时由第二个DNS服务器去解析，如有任何一个DNS服务器故障，那么这一次的解析会一直持续到resolver_timeout，然后解析失败，且日志报错解析不了域名，通过页面抛出502错误。</p>
+</blockquote>
+<h2 id="第二种-使用tengine"><a href="#第二种-使用tengine" class="headerlink" title="第二种 使用tengine"></a>第二种 使用tengine</h2><p>版本2.1.2以上，Tengine的ngx_http_upstream_dynamic_module模块，提供了在运行时动态解析upstream中server域名的功能。</p>
+<blockquote>
+<p>upstream backend {<br>dynamic_resolve fallback=stale fail_timeout=30s;<br>server a.com;<br>server b.com;<br>}</p>
+</blockquote>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-12-02T10:27:41+08:00"
-              content="2020-12-02">
-          12-02
-        </time>
-      </div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/nginx/" rel="tag"># nginx</a>
+          </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/12/02/k8s%E9%83%A8%E7%BD%B2nacos%E9%9B%86%E7%BE%A4/" itemprop="url">
-            <span itemprop="name">k8s部署nacos集群</span>
-          </a>
-      </div>
+        
 
-    </header>
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/12/10/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%87%E6%A1%88%E6%9D%90%E6%96%99/" rel="prev" title="阿里云备案材料">
+      <i class="fa fa-chevron-left"></i> 阿里云备案材料
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
   </article>
-
-    </div>
-  </div>
   
   
-  
-
   
 
 
@@ -275,6 +355,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">问题简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">2.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%A7%8D-%E4%BD%BF%E7%94%A8nginx%E7%9A%84resolver"><span class="nav-number">2.1.</span> <span class="nav-text">第一种 使用nginx的resolver</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%A7%8D-%E4%BD%BF%E7%94%A8tengine"><span class="nav-number">2.2.</span> <span class="nav-text">第二种 使用tengine</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

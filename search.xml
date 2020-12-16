@@ -151,4 +151,69 @@
         <tag>nacos</tag>
       </tags>
   </entry>
+  <entry>
+    <title>nginx反向代理dns缓存问题</title>
+    <url>/2020/12/16/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86dns%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>为解决前端跨域问题，使用了nginx反向代理做处理</p>
+<a id="more"></a>
+
+<blockquote>
+<p>location ^~ /public_static/ {<br>   proxy_pass <a href="https://example.com/">https://example.com</a>;<br>}</p>
+</blockquote>
+<h1 id="问题简介"><a href="#问题简介" class="headerlink" title="问题简介"></a>问题简介</h1><blockquote>
+<p>​        example.com为cdn域名，ip是动态解析的，上线几天后，发现网站资源加载不出来，查看nginx日志发现资源全部超时了。查询nginx相关文档，确认nginx在启动加载配置文件时，会把域名接信息成ip，然后把IP缓存起来，以后会一直使用解析到的IP并且不会再更改，除非重新启动Nginx，Nginx才会重新解析域名。</p>
+</blockquote>
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><h2 id="第一种-使用nginx的resolver"><a href="#第一种-使用nginx的resolver" class="headerlink" title="第一种 使用nginx的resolver"></a>第一种 使用nginx的resolver</h2><ul>
+<li><p>默认nginx会使用/etc/resolv.conf下的域名服务器进行解析</p>
+</li>
+<li><p>可以通过在nginx配置文件中的http部分或者server部分设定如下配置</p>
+<blockquote>
+<p>server {</p>
+<p>​    resolver 100.100.2.136 100.100.2.138 valid=3000s;</p>
+<p>​    resolver_timeout 3s;</p>
+<p>}</p>
+</blockquote>
+</li>
+<li><p>resolver 后面指定DNS服务器，可以指定多个，空格隔开</p>
+</li>
+<li><p>valid设置DNS缓存失效时间</p>
+</li>
+<li><p>resolver_timeout 指定解析域名时，DNS服务器的超时时间，建议3秒左右</p>
+</li>
+</ul>
+<blockquote>
+<p>​        当resolver 后面跟多个DNS服务器时，一定要保证这些DNS服务器都是有效的，因为这种是负载均衡模式的，当DNS记录失效了(超过valid时间)，首先由第一个DNS服务器去解析，下一次继续失效时由第二个DNS服务器去解析，如有任何一个DNS服务器故障，那么这一次的解析会一直持续到resolver_timeout，然后解析失败，且日志报错解析不了域名，通过页面抛出502错误。</p>
+</blockquote>
+<h2 id="第二种-使用tengine"><a href="#第二种-使用tengine" class="headerlink" title="第二种 使用tengine"></a>第二种 使用tengine</h2><p>版本2.1.2以上，Tengine的ngx_http_upstream_dynamic_module模块，提供了在运行时动态解析upstream中server域名的功能。</p>
+<blockquote>
+<p>upstream backend {<br>dynamic_resolve fallback=stale fail_timeout=30s;<br>server a.com;<br>server b.com;<br>}</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>centos</category>
+        <category>nginx</category>
+      </categories>
+      <tags>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>阿里云备案材料</title>
+    <url>/2020/12/10/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%87%E6%A1%88%E6%9D%90%E6%96%99/</url>
+    <content><![CDATA[<h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>阿里云网站备案流程以及所需材料</p>
+<a id="more"></a>
+<ul>
+<li>营业执照</li>
+<li>网站负责人证件，负责人非公司法人，需提交授权委托书</li>
+<li>负责人手持营业执照</li>
+<li>负责人通过阿里云app进行人脸识别，并拍摄身份证正方面</li>
+</ul>
+]]></content>
+      <categories>
+        <category>beian</category>
+      </categories>
+      <tags>
+        <tag>beian</tag>
+      </tags>
+  </entry>
 </search>
