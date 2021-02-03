@@ -232,8 +232,7 @@
   <entry>
     <title>kubernetes--pod的生命周期管理</title>
     <url>/2021/02/03/kubernetes-pod%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86/</url>
-    <content><![CDATA[<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Kubernetes 支持 postStart 和 preStop 事件。当一个主容器启动后，Kubernetes 将立即发送 postStart 事件；在主容器被终结之前，Kubernetes 将发送一个 preStop 事件。</span><br></pre></td></tr></table></figure>
-
+    <content><![CDATA[<p>Kubernetes 支持 postStart 和 preStop 事件。当一个主容器启动后，Kubernetes 将立即发送 postStart 事件；在主容器被终结之前，Kubernetes 将发送一个 preStop 事件。</p>
 <a id="more"></a>
 
 <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>服务更新时时常出现服务繁忙情况，因为后端服务代理在经过nginx之后还有一层网关服务，网关服务无法通过k8s获取到pod的健康状态，而是通过nacos获取的，pod关闭后，nacos健康状态无法及时更新，导致网关服务路由到不健康的pod服务上。</p>
