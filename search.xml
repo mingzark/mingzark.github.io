@@ -229,4 +229,34 @@
         <tag>es</tag>
       </tags>
   </entry>
+  <entry>
+    <title>kubernetes--pod的生命周期管理</title>
+    <url>/2021/02/03/kubernetes-pod%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86/</url>
+    <content><![CDATA[<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Kubernetes 支持 postStart 和 preStop 事件。当一个主容器启动后，Kubernetes 将立即发送 postStart 事件；在主容器被终结之前，Kubernetes 将发送一个 preStop 事件。</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>服务更新时时常出现服务繁忙情况，因为后端服务代理在经过nginx之后还有一层网关服务，网关服务无法通过k8s获取到pod的健康状态，而是通过nacos获取的，pod关闭后，nacos健康状态无法及时更新，导致网关服务路由到不健康的pod服务上。</p>
+<p>通过lifecycle的preStop可以很方便解决这一问题。</p>
+<h2 id="lifecycle"><a href="#lifecycle" class="headerlink" title="lifecycle"></a>lifecycle</h2><p>创建资源对象时，可以使用lifecycle来管理容器在运行前和关闭前的一些动作。</p>
+<p>lifecycle有两种回调函数：</p>
+<ul>
+<li>postStart：容器创建成功后，运行前的任务，用于资源部署、环境准备等。</li>
+<li>preStop：在容器被终止前的任务，用于优雅关闭应用程序、通知其他系统等等。</li>
+</ul>
+<p>通过预停止脚本，当容器关闭前会将服务从nacos下线</p>
+<h3 id="shell脚本"><a href="#shell脚本" class="headerlink" title="shell脚本"></a>shell脚本</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl -X PUT &quot;nacos地址&#x2F;nacos&#x2F;v1&#x2F;ns&#x2F;instance?serviceName&#x3D;$MY_SERVICE_NAME&amp;ip&#x3D;$MY_POD_IP&amp;port&#x3D;$MY_POD_PORT&amp;enabled&#x3D;false&amp;namespaceId&#x3D;&quot;</span><br></pre></td></tr></table></figure>
+
+<h3 id="yaml文件"><a href="#yaml文件" class="headerlink" title="yaml文件"></a>yaml文件</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">containers:</span><br><span class="line">  - env:</span><br><span class="line">      - name: LANG</span><br><span class="line">        value: en_US.UTF-8</span><br><span class="line">      - name: JAVA_HOME</span><br><span class="line">        value: &#x2F;usr&#x2F;java&#x2F;jdk</span><br><span class="line">      - name: TZ</span><br><span class="line">        value: Asia&#x2F;Shanghai</span><br><span class="line">      - name: MY_SERVICE_NAME</span><br><span class="line">        value: </span><br><span class="line">      - name: MY_POD_PORT</span><br><span class="line">        value: &#39;8080&#39;</span><br><span class="line">      - name: MY_POD_IP</span><br><span class="line">        valueFrom:</span><br><span class="line">          fieldRef:</span><br><span class="line">            fieldPath: status.podIP</span><br><span class="line">    image: &#39;&#39;</span><br><span class="line">    imagePullPolicy: Always</span><br><span class="line">    name: </span><br><span class="line">      lifecycle:</span><br><span class="line">        preStop:</span><br><span class="line">          exec:</span><br><span class="line">            command: [&quot;&#x2F;bin&#x2F;sh&quot;,&quot;&#x2F;pre-stop.sh&quot;]</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>k8s</category>
+        <category>pod</category>
+      </categories>
+      <tags>
+        <tag>k8s</tag>
+        <tag>pod</tag>
+      </tags>
+  </entry>
 </search>
