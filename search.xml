@@ -220,6 +220,7 @@
 <h1 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h1><ul>
 <li>logstash支持mysql视图查询，但数据过多时查询很慢，iops压力会很大，建议使用查询语句查询</li>
 <li>logstash支持秒级查询，格式同crontab</li>
+<li>mysql默认时间0000-00-00,非有效日期,logstash无法同步</li>
 </ul>
 ]]></content>
       <categories>
