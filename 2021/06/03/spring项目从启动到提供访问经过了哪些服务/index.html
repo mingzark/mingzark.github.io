@@ -20,28 +20,47 @@
     var CONFIG = {"hostname":"mingzark.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="小手一撑 与世无争">
-<meta property="og:url" content="https://mingzark.github.io/index.html">
+  <meta name="description" content="1、dns当一个用户在地址栏输入www.zjyjc.com时，DNS解析过程如下：  浏览器先检查自身缓存中有没有被解析过的这个域名对应的ip地址，如果有，解析结束。 如果浏览器缓存没有命中，检查操作系统中本地的hosts文件是否有这个网址映射关系，如果有，就先调用这个IP地址映射，完成域名解析。 如果还没有命中域名，才会真正的请求本地域名服务器（LDNS）来解析这个域名，这台服务器会缓存域名解析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring项目从启动到提供访问经过了哪些服务">
+<meta property="og:url" content="https://mingzark.github.io/2021/06/03/spring%E9%A1%B9%E7%9B%AE%E4%BB%8E%E5%90%AF%E5%8A%A8%E5%88%B0%E6%8F%90%E4%BE%9B%E8%AE%BF%E9%97%AE%E7%BB%8F%E8%BF%87%E4%BA%86%E5%93%AA%E4%BA%9B%E6%9C%8D%E5%8A%A1/index.html">
 <meta property="og:site_name" content="小手一撑 与世无争">
+<meta property="og:description" content="1、dns当一个用户在地址栏输入www.zjyjc.com时，DNS解析过程如下：  浏览器先检查自身缓存中有没有被解析过的这个域名对应的ip地址，如果有，解析结束。 如果浏览器缓存没有命中，检查操作系统中本地的hosts文件是否有这个网址映射关系，如果有，就先调用这个IP地址映射，完成域名解析。 如果还没有命中域名，才会真正的请求本地域名服务器（LDNS）来解析这个域名，这台服务器会缓存域名解析">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://z3.ax1x.com/2021/06/03/21h78S.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/06/03/214YIP.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/06/03/2140MQ.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/06/03/215s6e.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/06/03/21IgvF.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/06/03/21H1sS.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/06/03/21biYn.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/06/03/21LXS1.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/06/03/21XZC9.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/06/03/21Ooct.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/06/03/21vAp9.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/06/03/21XzIe.png">
+<meta property="article:published_time" content="2021-06-03T07:27:41.000Z">
+<meta property="article:modified_time" content="2021-06-03T07:34:26.338Z">
 <meta property="article:author" content="赵明">
+<meta property="article:tag" content="k8s">
+<meta property="article:tag" content="spring">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://z3.ax1x.com/2021/06/03/21h78S.png">
 
-<link rel="canonical" href="https://mingzark.github.io/">
+<link rel="canonical" href="https://mingzark.github.io/2021/06/03/spring%E9%A1%B9%E7%9B%AE%E4%BB%8E%E5%90%AF%E5%8A%A8%E5%88%B0%E6%8F%90%E4%BE%9B%E8%AE%BF%E9%97%AE%E7%BB%8F%E8%BF%87%E4%BA%86%E5%93%AA%E4%BA%9B%E6%9C%8D%E5%8A%A1/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>小手一撑 与世无争</title>
+  <title>spring项目从启动到提供访问经过了哪些服务 | 小手一撑 与世无争</title>
   
 
 
@@ -178,9 +197,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -196,10 +216,9 @@
       <meta itemprop="name" content="小手一撑 与世无争">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/06/03/spring%E9%A1%B9%E7%9B%AE%E4%BB%8E%E5%90%AF%E5%8A%A8%E5%88%B0%E6%8F%90%E4%BE%9B%E8%AE%BF%E9%97%AE%E7%BB%8F%E8%BF%87%E4%BA%86%E5%93%AA%E4%BA%9B%E6%9C%8D%E5%8A%A1/" class="post-title-link" itemprop="url">spring项目从启动到提供访问经过了哪些服务</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          spring项目从启动到提供访问经过了哪些服务
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -236,7 +255,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="1、dns"><a href="#1、dns" class="headerlink" title="1、dns"></a>1、dns</h2><p>当一个用户在地址栏输入<a href="http://www.zjyjc.com时，DNS解析过程如下：">www.zjyjc.com时，DNS解析过程如下：</a></p>
+        <h2 id="1、dns"><a href="#1、dns" class="headerlink" title="1、dns"></a>1、dns</h2><p>当一个用户在地址栏输入<a href="http://www.zjyjc.com时，DNS解析过程如下：">www.zjyjc.com时，DNS解析过程如下：</a></p>
 <ol>
 <li>浏览器先检查自身缓存中有没有被解析过的这个域名对应的ip地址，如果有，解析结束。</li>
 <li>如果浏览器缓存没有命中，检查操作系统中本地的hosts文件是否有这个网址映射关系，如果有，就先调用这个IP地址映射，完成域名解析。</li>
@@ -287,418 +306,34 @@
 <p>apiVersion: apps/v1<br>kind: Deployment<br>metadata:<br>  labels:<br>    app: zjye-sso-api-pro<br>  name: zjye-sso-api-pro<br>  namespace: pro<br>spec:<br>  progressDeadlineSeconds: 600<br>  replicas: 3<br>  selector:<br>    matchLabels:<br>      app: zjye-sso-api-pro<br>  strategy:<br>    rollingUpdate:<br>      maxSurge: 50%<br>      maxUnavailable: 50%<br>    type: RollingUpdate<br>  template:<br>    metadata:<br>      labels:<br>        app: zjye-sso-api-pro<br>    spec:<br>      affinity:<br>        podAntiAffinity:<br>          requiredDuringSchedulingIgnoredDuringExecution:<br>            - labelSelector:<br>                matchExpressions:<br>                  - key: app<br>                    operator: In<br>                    values:<br>                      - zjye-sso-api-pro<br>                    topologyKey: kubernetes.io/hostname<br>                  containers:<br>                - args:<br>                        - ‘-jar’<br>                        - ./zjye-api.jar<br>                        - ‘-XX:+UseG1GC’<br>                        - ‘-XX:+HeapDumpOnOutOfMemoryError’<br>                        - ‘-Xms512M’<br>                        - ‘-Xmx4G’<br>                        - ‘–spring.profiles.active=prod’<br>                        - ‘–NACOS_SERVER=nacos-svc’<br>                        - ‘–NACOS_NAMESPACE=829cc240-d9’<br>                    command:<br>                        - java<br>                    env:<br>                        - name: LANG<br>                        value: en_US.UTF-8<br>                        - name: JAVA_HOME<br>                        value: /usr/java/jdk<br>                        - name: TZ<br>                        value: Asia/Shanghai<br>                        - name: aliyun_logs_zjye-sso-api<br>                        value: /zjye/log/zjye-sso-api/*.log<br>                        - name: MY_SERVICE_NAME<br>                        value: zjye-sso-api<br>                        - name: MY_POD_PORT<br>                        value: ‘19330’<br>                        - name: MY_POD_IP<br>                        valueFrom:<br>                      fieldRef:<br>                        fieldPath: status.podIP<br>                      image: ‘registry-vpc.cn-zhangjiakou.aliyuncs.com/zjye/zjye-sso-api:latest’<br>                      imagePullPolicy: Always<br>                      name: zjye-sso-api-pro<br>                      lifecycle:<br>                          preStop:<br>                        exec:<br>                      command: [“/bin/sh”,”/pre-stop.sh”]<br>                      ports:<br>                        - containerPort: 19330<br>                        protocol: TCP<br>                      livenessProbe:<br>                          failureThreshold: 3<br>                          httpGet:<br>                        path: /doc.html<br>                        port: 19330<br>                        scheme: HTTP<br>                          initialDelaySeconds: 3<br>                          periodSeconds: 10<br>                          successThreshold: 1<br>                          timeoutSeconds: 5<br>                      readinessProbe:<br>                          failureThreshold: 3<br>                          httpGet:<br>                        path: /doc.html<br>                        port: 19330<br>                        scheme: HTTP<br>                          initialDelaySeconds: 3<br>                          periodSeconds: 10<br>                          successThreshold: 2<br>                          timeoutSeconds: 1<br>                      resources:<br>                          limits:<br>                        cpu: ‘4’<br>                        ephemeral-storage: 4Gi<br>                        memory: 6Gi<br>                          requests:<br>                        cpu: 500m<br>                        memory: 1024Mi<br>                        restartPolicy: Always</p>
 </blockquote>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+          <div class="post-tags">
+              <a href="/tags/k8s/" rel="tag"># k8s</a>
+              <a href="/tags/spring/" rel="tag"># spring</a>
+          </div>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://mingzark.github.io/2021/02/03/kubernetes-pod%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="赵明">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小手一撑 与世无争">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/02/03/kubernetes-pod%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86/" class="post-title-link" itemprop="url">kubernetes--pod的生命周期管理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-02-03 14:20:47 / 修改时间：17:13:37" itemprop="dateCreated datePublished" datetime="2021-02-03T14:20:47+08:00">2021-02-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/k8s/" itemprop="url" rel="index"><span itemprop="name">k8s</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/k8s/pod/" itemprop="url" rel="index"><span itemprop="name">pod</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Kubernetes 支持 postStart 和 preStop 事件。当一个主容器启动后，Kubernetes 将立即发送 postStart 事件；在主容器被终结之前，Kubernetes 将发送一个 preStop 事件。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/02/03/kubernetes-pod%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
-    </div>
 
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://mingzark.github.io/2021/01/12/elasticsearch%E9%80%9A%E8%BF%87logstash%E5%90%8C%E6%AD%A5mysql/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="赵明">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小手一撑 与世无争">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/01/12/elasticsearch%E9%80%9A%E8%BF%87logstash%E5%90%8C%E6%AD%A5mysql/" class="post-title-link" itemprop="url">elasticsearch通过logstash同步mysql</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-01-12 16:06:50" itemprop="dateCreated datePublished" datetime="2021-01-12T16:06:50+08:00">2021-01-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-24 09:10:10" itemprop="dateModified" datetime="2021-03-24T09:10:10+08:00">2021-03-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/centos/" itemprop="url" rel="index"><span itemprop="name">centos</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><ul>
-<li>elasticsearch版本：<code>7.4</code></li>
-<li>logstash版本：<code>7.4</code></li>
-<li>mysql版本：<code>8.0</code>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/01/12/elasticsearch%E9%80%9A%E8%BF%87logstash%E5%90%8C%E6%AD%A5mysql/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/02/03/kubernetes-pod%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86/" rel="prev" title="kubernetes--pod的生命周期管理">
+      <i class="fa fa-chevron-left"></i> kubernetes--pod的生命周期管理
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://mingzark.github.io/2020/12/16/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86dns%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="赵明">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小手一撑 与世无争">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/16/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86dns%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">nginx反向代理dns缓存问题</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-12-16 15:36:05 / 修改时间：16:18:27" itemprop="dateCreated datePublished" datetime="2020-12-16T15:36:05+08:00">2020-12-16</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/centos/" itemprop="url" rel="index"><span itemprop="name">centos</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/centos/nginx/" itemprop="url" rel="index"><span itemprop="name">nginx</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>为解决前端跨域问题，使用了nginx反向代理做处理</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/12/16/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86dns%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://mingzark.github.io/2020/12/02/k8s%E9%83%A8%E7%BD%B2nacos%E9%9B%86%E7%BE%A4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="赵明">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小手一撑 与世无争">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/02/k8s%E9%83%A8%E7%BD%B2nacos%E9%9B%86%E7%BE%A4/" class="post-title-link" itemprop="url">k8s部署nacos集群</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-12-02 10:27:41 / 修改时间：11:44:50" itemprop="dateCreated datePublished" datetime="2020-12-02T10:27:41+08:00">2020-12-02</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/k8s/" itemprop="url" rel="index"><span itemprop="name">k8s</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/k8s/nacos/" itemprop="url" rel="index"><span itemprop="name">nacos</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>​        根据GitHub上k8s搭建nacos集群教程部署后，手动删除pod，leader无法正常选举，于是改用deployment部署，因未使用nacos持久化实例，所以未挂载共享存储，有需要可以自行配置。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/12/02/k8s%E9%83%A8%E7%BD%B2nacos%E9%9B%86%E7%BE%A4/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://mingzark.github.io/2020/12/01/openvpn%E6%90%AD%E5%BB%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="赵明">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小手一撑 与世无争">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/01/openvpn%E6%90%AD%E5%BB%BA/" class="post-title-link" itemprop="url">openvpn搭建</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-12-01 16:11:01 / 修改时间：18:54:49" itemprop="dateCreated datePublished" datetime="2020-12-01T16:11:01+08:00">2020-12-01</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/centos/" itemprop="url" rel="index"><span itemprop="name">centos</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><ul>
-<li>此法用于客户端通过OpenVPN服务器访问服务器所在私网网段
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/12/01/openvpn%E6%90%AD%E5%BB%BA/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-
   
 
 
@@ -751,6 +386,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81dns"><span class="nav-number">1.</span> <span class="nav-text">1、dns</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81cdn"><span class="nav-number">2.</span> <span class="nav-text">2、cdn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81waf-web%E5%BA%94%E7%94%A8%E9%98%B2%E7%81%AB%E5%A2%99"><span class="nav-number">3.</span> <span class="nav-text">3、waf(web应用防火墙)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%81slb-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="nav-number">4.</span> <span class="nav-text">4、slb(负载均衡)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E3%80%81service"><span class="nav-number">5.</span> <span class="nav-text">5、service</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6%E3%80%81nginx"><span class="nav-number">6.</span> <span class="nav-text">6、nginx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7%E3%80%81gateway"><span class="nav-number">7.</span> <span class="nav-text">7、gateway</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8%E3%80%81spring%E9%A1%B9%E7%9B%AE"><span class="nav-number">8.</span> <span class="nav-text">8、spring项目</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
