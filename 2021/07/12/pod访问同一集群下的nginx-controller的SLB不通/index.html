@@ -20,15 +20,21 @@
     var CONFIG = {"hostname":"mingzark.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="小手一撑 与世无争">
-<meta property="og:url" content="https://mingzark.github.io/categories/centos/index.html">
+  <meta name="description" content="问题简介 ​        在Kubernetes集群中有部分服务无法访问集群暴露出去的SLB。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pod访问同一集群下的nginx-controller的SLB不通">
+<meta property="og:url" content="https://mingzark.github.io/2021/07/12/pod%E8%AE%BF%E9%97%AE%E5%90%8C%E4%B8%80%E9%9B%86%E7%BE%A4%E4%B8%8B%E7%9A%84nginx-controller%E7%9A%84SLB%E4%B8%8D%E9%80%9A/index.html">
 <meta property="og:site_name" content="小手一撑 与世无争">
+<meta property="og:description" content="问题简介 ​        在Kubernetes集群中有部分服务无法访问集群暴露出去的SLB。">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-07-12T03:31:18.754Z">
+<meta property="article:modified_time" content="2021-07-12T03:30:31.000Z">
 <meta property="article:author" content="赵明">
+<meta property="article:tag" content="k8s">
+<meta property="article:tag" content="nginx">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://mingzark.github.io/categories/centos/">
+<link rel="canonical" href="https://mingzark.github.io/2021/07/12/pod%E8%AE%BF%E9%97%AE%E5%90%8C%E4%B8%80%E9%9B%86%E7%BE%A4%E4%B8%8B%E7%9A%84nginx-controller%E7%9A%84SLB%E4%B8%8D%E9%80%9A/">
 
 
 <script id="page-configurations">
@@ -36,12 +42,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>分类: centos | 小手一撑 与世无争</title>
+  <title>pod访问同一集群下的nginx-controller的SLB不通 | 小手一撑 与世无争</title>
   
 
 
@@ -178,114 +184,103 @@
         <div class="content-wrap">
           
 
-          <div class="content category">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h2 class="collection-header">centos
-          <small>分类</small>
-        </h2>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mingzark.github.io/2021/07/12/pod%E8%AE%BF%E9%97%AE%E5%90%8C%E4%B8%80%E9%9B%86%E7%BE%A4%E4%B8%8B%E7%9A%84nginx-controller%E7%9A%84SLB%E4%B8%8D%E9%80%9A/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="赵明">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小手一撑 与世无争">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          pod访问同一集群下的nginx-controller的SLB不通
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-07-12 11:31:18 / 修改时间：11:30:31" itemprop="dateCreated datePublished" datetime="2021-07-12T11:31:18+08:00">2021-07-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/centos/" itemprop="url" rel="index"><span itemprop="name">centos</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/centos/nginx/" itemprop="url" rel="index"><span itemprop="name">nginx</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2021</span>
-    </div>
+        <h1 id="问题简介"><a href="#问题简介" class="headerlink" title="问题简介"></a>问题简介</h1><blockquote>
+<p>​        在Kubernetes集群中有部分服务无法访问集群暴露出去的SLB。</p>
+</blockquote>
+<a id="more"></a>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-07-12T11:31:18+08:00"
-              content="2021-07-12">
-          07-12
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/07/12/pod%E8%AE%BF%E9%97%AE%E5%90%8C%E4%B8%80%E9%9B%86%E7%BE%A4%E4%B8%8B%E7%9A%84nginx-controller%E7%9A%84SLB%E4%B8%8D%E9%80%9A/" itemprop="url">
-            <span itemprop="name">pod访问同一集群下的nginx-controller的SLB不通</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-01-12T16:06:50+08:00"
-              content="2021-01-12">
-          01-12
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/01/12/elasticsearch%E9%80%9A%E8%BF%87logstash%E5%90%8C%E6%AD%A5mysql/" itemprop="url">
-            <span itemprop="name">elasticsearch通过logstash同步mysql</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-    <div class="collection-year">
-      <span class="collection-header">2020</span>
-    </div>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-12-16T15:36:05+08:00"
-              content="2020-12-16">
-          12-16
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/12/16/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86dns%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/" itemprop="url">
-            <span itemprop="name">nginx反向代理dns缓存问题</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-12-01T16:11:01+08:00"
-              content="2020-12-01">
-          12-01
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/12/01/openvpn%E6%90%AD%E5%BB%BA/" itemprop="url">
-            <span itemprop="name">openvpn搭建</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><blockquote>
+<p>​        SLB设置了<code>externalTrafficPolicy: Local</code>类型，这种类型的SLB地址只有在Node中部署了对应的后端Pod，才能被访问。因为SLB的地址是集群外使用，如果集群节点和Pod不能直接访问，请求不会到SLB，会被当作Service的扩展IP地址，被kube-proxy的iptables或ipvs转发。如果刚好集群节点或者Pod所在的节点上没有相应的后端服务Pod，就会发生网络不通的问题，而如果有相应的后端服务Pod，是可以正常访问。</p>
+<p>​        将LoadBalancer的Service中的externalTrafficPolicy修改为Cluster，但是在应用中会丢失源IP。</p>
+<p>​        参考<a target="_blank" rel="noopener" href="https://help.aliyun.com/knowledge_detail/171437.html?spm=5176.smartservice_service_chat.0.0.7f95709asvYshC">https://help.aliyun.com/knowledge_detail/171437.html?spm=5176.smartservice_service_chat.0.0.7f95709asvYshC</a></p>
+</blockquote>
 
     </div>
-  </div>
-  
-  
-  
 
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/k8s/" rel="tag"># k8s</a>
+              <a href="/tags/nginx/" rel="tag"># nginx</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/03/spring%E9%A1%B9%E7%9B%AE%E4%BB%8E%E5%90%AF%E5%8A%A8%E5%88%B0%E6%8F%90%E4%BE%9B%E8%AE%BF%E9%97%AE%E7%BB%8F%E8%BF%87%E4%BA%86%E5%93%AA%E4%BA%9B%E6%9C%8D%E5%8A%A1/" rel="prev" title="spring项目从启动到提供访问经过了哪些服务">
+      <i class="fa fa-chevron-left"></i> spring项目从启动到提供访问经过了哪些服务
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
 
@@ -338,6 +333,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">问题简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">2.</span> <span class="nav-text">解决方案</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

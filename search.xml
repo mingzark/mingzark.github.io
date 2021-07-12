@@ -319,4 +319,27 @@
         <tag>spring</tag>
       </tags>
   </entry>
+  <entry>
+    <title>pod访问同一集群下的nginx-controller的SLB不通</title>
+    <url>/2021/07/12/pod%E8%AE%BF%E9%97%AE%E5%90%8C%E4%B8%80%E9%9B%86%E7%BE%A4%E4%B8%8B%E7%9A%84nginx-controller%E7%9A%84SLB%E4%B8%8D%E9%80%9A/</url>
+    <content><![CDATA[<h1 id="问题简介"><a href="#问题简介" class="headerlink" title="问题简介"></a>问题简介</h1><blockquote>
+<p>​        在Kubernetes集群中有部分服务无法访问集群暴露出去的SLB。</p>
+</blockquote>
+<a id="more"></a>
+
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><blockquote>
+<p>​        SLB设置了<code>externalTrafficPolicy: Local</code>类型，这种类型的SLB地址只有在Node中部署了对应的后端Pod，才能被访问。因为SLB的地址是集群外使用，如果集群节点和Pod不能直接访问，请求不会到SLB，会被当作Service的扩展IP地址，被kube-proxy的iptables或ipvs转发。如果刚好集群节点或者Pod所在的节点上没有相应的后端服务Pod，就会发生网络不通的问题，而如果有相应的后端服务Pod，是可以正常访问。</p>
+<p>​        将LoadBalancer的Service中的externalTrafficPolicy修改为Cluster，但是在应用中会丢失源IP。</p>
+<p>​        参考<a href="https://help.aliyun.com/knowledge_detail/171437.html?spm=5176.smartservice_service_chat.0.0.7f95709asvYshC">https://help.aliyun.com/knowledge_detail/171437.html?spm=5176.smartservice_service_chat.0.0.7f95709asvYshC</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>centos</category>
+        <category>nginx</category>
+      </categories>
+      <tags>
+        <tag>k8s</tag>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
 </search>
