@@ -342,4 +342,28 @@
         <tag>nginx</tag>
       </tags>
   </entry>
+  <entry>
+    <title>nginx配置vue history模式</title>
+    <url>/2021/07/26/nginx%E9%85%8D%E7%BD%AEvue_history%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><ul>
+<li>nginx配置vue history后，页面加载空白<a id="more"></a>
+
+</li>
+</ul>
+<h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><p>1、一般情况使用配置一即可；</p>
+<p>2、如果VUE应用没有发布在域名的目录根下，比如<a href="http://xxx.com/wx/%EF%BC%8C%E9%9C%80%E8%A6%81%E4%BD%BF%E7%94%A8%E9%85%8D%E7%BD%AE%E4%BA%8C%EF%BC%9B">http://xxx.com/wx/，需要使用配置二；</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">配置一：</span><br><span class="line">   location &#x2F; &#123;</span><br><span class="line">     try_files $uri $uri&#x2F; &#x2F;index.html;</span><br><span class="line">   &#125;</span><br><span class="line">配置二：</span><br><span class="line"> location &#x2F;wx &#123;</span><br><span class="line">   root   &#x2F;data&#x2F;nginx&#x2F;html;</span><br><span class="line">   index  index.html index.htm;</span><br><span class="line">   if (!-e $request_filename) &#123;</span><br><span class="line">     rewrite ^&#x2F;(.*) &#x2F;wx&#x2F;index.html last;</span><br><span class="line">     break;</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>注：vue配置，base路径同域名访问路径</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">base: &#39;&#x2F;wx&#39;,</span><br><span class="line">mode: &#39;history&#39;,</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>centos</category>
+        <category>nginx</category>
+      </categories>
+      <tags>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
 </search>
