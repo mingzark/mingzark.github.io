@@ -377,7 +377,7 @@
 <h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><ol>
 <li>简单替换模块 ngx_http_sub_module：</li>
 </ol>
-<p>​                （1）介绍：</p>
+<pre><code>     （1）介绍：</code></pre>
 <p>　　　　　　ngx_http_sub_module模块是一个过滤器，它修改网站响应内容中的字符串。这个模块已经内置在nginx中，但是默认未安装，需要安装需要加上配置参数：–with-http_sub_module 如果已经安装nginx,只需要再添加这个模块就可以了。</p>
 <p>　　　　（2）常用指令：</p>
 <p>　　　　　　2.1 sub_filter指令： sub_filter string（原字符串） replacement（用于替换的字符串）;</p>
@@ -399,7 +399,8 @@
 <ol start="2">
 <li>nginx配置返回json</li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">location ~ ^&#x2F;get_json &#123;</span><br><span class="line">    default_type application&#x2F;json;</span><br><span class="line">    return 200 &#39;&#123;&quot;status&quot;:&quot;success&quot;,&quot;result&quot;:&quot;nginx json&quot;&#125;&#39;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">location ~ ^&#x2F;get_json &#123;</span><br><span class="line">    default_type application&#x2F;json;</span><br><span class="line">    return 200 &#39;&#123;&quot;status&quot;:&quot;success&quot;,&quot;result&quot;:&quot;nginx json&quot;&#125;&#39;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
       <categories>
         <category>nginx</category>
       </categories>
