@@ -370,7 +370,7 @@
     <title>nginx替换响应内容</title>
     <url>/2021/09/09/nginx%E6%9B%BF%E6%8D%A2%E5%93%8D%E5%BA%94%E5%86%85%E5%AE%B9/</url>
     <content><![CDATA[<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><ul>
-<li>使用nginx方向代理替换域名后部分请求接口在响应内容里，因XmlHttpRequest同源策略被拦截，因此还需要替换响应内容。<a id="more"></a>
+<li>ckeditor公式插件使用限制，通过nginx方向代理替换域名后部分请求接口在响应内容里，因XmlHttpRequest同源策略被拦截，因此还需要替换响应内容。<a id="more"></a>
 
 </li>
 </ul>
@@ -399,7 +399,8 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">location &#x3D; &#x2F;demo&#x2F;editor&#x2F;editor &#123;</span><br><span class="line">  alias &#x2F;html&#x2F;js&#x2F;editor;</span><br><span class="line">&#125;</span><br><span class="line">location &#x3D; &#x2F;demo&#x2F;plugins&#x2F;app&#x2F;configurationjs &#123;</span><br><span class="line">  sub_filter_types * ;</span><br><span class="line">  #add_header Access-Control-Allow-Origin *;跨域配置视情况加，不然会出现请求头重复</span><br><span class="line">  proxy_set_header Referer &quot;www.wiris.net&quot;;</span><br><span class="line">  proxy_pass https:&#x2F;&#x2F;www.wiris.net;</span><br><span class="line">  sub_filter &#39;www.wiris.net&#39; &#39;wiris.aaa.com&#39;;</span><br><span class="line">&#125;</span><br><span class="line">location ^~ &#x2F;demo&#x2F; &#123;</span><br><span class="line">  proxy_set_header Referer &quot;www.wiris.net&quot;;</span><br><span class="line">  proxy_pass https:&#x2F;&#x2F;www.wiris.net;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>注：实际在替换某些类型时没替换成功，需要下载到本地</p>
-<h4 id="nginx配置返回json"><a href="#nginx配置返回json" class="headerlink" title="nginx配置返回json"></a>nginx配置返回json</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">location ~ ^&#x2F;get_json &#123;</span><br><span class="line">  default_type application&#x2F;json;</span><br><span class="line">  return 200 &#39;&#123;&quot;status&quot;:&quot;success&quot;,&quot;result&quot;:&quot;nginx json&quot;&#125;&#39;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+<h4 id="nginx配置返回json"><a href="#nginx配置返回json" class="headerlink" title="nginx配置返回json"></a>nginx配置返回json</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">location ~ ^&#x2F;get_json &#123;</span><br><span class="line">  default_type application&#x2F;json;</span><br><span class="line">  return 200 &#39;&#123;&quot;status&quot;:&quot;success&quot;,&quot;result&quot;:&quot;nginx json&quot;&#125;&#39;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
       <categories>
         <category>nginx</category>
       </categories>
