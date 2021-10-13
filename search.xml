@@ -408,4 +408,29 @@
         <tag>nginx</tag>
       </tags>
   </entry>
+  <entry>
+    <title>请求header过大springboot报400错误</title>
+    <url>/2021/10/13/%E8%AF%B7%E6%B1%82header%E8%BF%87%E5%A4%A7springboot%E6%8A%A5400%E9%94%99%E8%AF%AF/</url>
+    <content><![CDATA[<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><ul>
+<li>项目上线后所有后台接口报错400，接口直接访问正常，测试环境访问正常，经排查是由于正式环境请求cookie过大导致。<a id="more"></a>
+
+</li>
+</ul>
+<h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><p>1、nginx加大header缓存大小，未生效。</p>
+<p>前端http {</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">client_header_buffer_size 64k; 默认值1k </span><br><span class="line">large_client_header_buffers 4 64k; 默认值4 8k</span><br></pre></td></tr></table></figure>
+
+<p>}</p>
+<p>2、后端springboot 配置后，问题解决，默认8KB</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">server: </span><br><span class="line">  max-http-header-size: 64KB</span><br></pre></td></tr></table></figure>
+
+<p>注：header限制需要所有经过的项目都放开限制</p>
+]]></content>
+      <categories>
+        <category>springboot</category>
+      </categories>
+      <tags>
+        <tag>springnoot</tag>
+      </tags>
+  </entry>
 </search>
