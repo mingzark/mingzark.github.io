@@ -433,4 +433,35 @@
         <tag>springnoot</tag>
       </tags>
   </entry>
+  <entry>
+    <title>wordpress配置cdn支持https</title>
+    <url>/2021/11/05/wordpress%E9%85%8D%E7%BD%AEcdn%E6%94%AF%E6%8C%81https/</url>
+    <content><![CDATA[<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><ul>
+<li>wordpress默认通过http访问，修改配置使支持https。<a id="more"></a>
+
+</li>
+</ul>
+<h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><p>1、进入WP后台，进入设置-常规 将WordPress地址（URL）、站点地址（URL）两项修改为：https。 或者更改数据库wp_option第1，2行http协议。</p>
+<p>2、修改网站根目录下wp-config.php</p>
+<p>在<code>\* @package WordPress</code>后面添加（不可在最后添加）：</p>
+<blockquote>
+<p>`/* 强制后台和登录使用 SSL */ </p>
+<p>$_SERVER[‘HTTPS’] = ‘on’;</p>
+<p>define(‘FORCE_SSL_LOGIN’, true);</p>
+<p>define(‘FORCE_SSL_ADMIN’, true);</p>
+</blockquote>
+<p>3、修改/wp-includes/load.php中的function is_ssl()，将文件里$_SERVER[‘HTTPS’]全部修改为$_SERVER[“HTTP_FROM_HTTPS”]，将最后一行的return false 更改为return true</p>
+<p>4、更改之前添加的多媒体文件地址，博客地址换为自己的域名</p>
+<blockquote>
+<p><code>update wp_posts set post_content = replace(post_content, &#39;http://博客地址&#39;,&#39;https://博客地址&#39;)</code></p>
+</blockquote>
+<p>5、cdn配置https证书，开启https强制跳转。</p>
+]]></content>
+      <categories>
+        <category>wordpress</category>
+      </categories>
+      <tags>
+        <tag>wordpress</tag>
+      </tags>
+  </entry>
 </search>
