@@ -64,7 +64,7 @@
 
 <h2 id="启动OpenVPN-server"><a href="#启动OpenVPN-server" class="headerlink" title="启动OpenVPN-server"></a>启动OpenVPN-server</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">chown -R root:openvpn &#x2F;etc&#x2F;openvpn</span><br><span class="line">systemctl enable openvpn-server@srv.service</span><br><span class="line">systemctl start openvpn-server@srv.service</span><br></pre></td></tr></table></figure>
 
-<h2 id="开启iptables策略"><a href="#开启iptables策略" class="headerlink" title="开启iptables策略"></a>开启iptables策略</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">iptables -t nat -A POSTROUTING -s 10.8.0.0&#x2F;24 -j MASQUERADE</span><br></pre></td></tr></table></figure>
+<h2 id="开启iptables策略"><a href="#开启iptables策略" class="headerlink" title="开启iptables策略"></a>开启iptables策略</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">iptables -t nat -A POSTROUTING -s 10.8.0.0&#x2F;24 -j MASQUERADE</span><br><span class="line">iptables -t nat -A POSTROUTING -s 10.8.0.0&#x2F;24 -d 172.16.0.0&#x2F;12 -j SNAT --to-source 172.17.190.180</span><br></pre></td></tr></table></figure>
 
 <h2 id="定期更新CRL"><a href="#定期更新CRL" class="headerlink" title="定期更新CRL"></a>定期更新CRL</h2><h3 id="说明-1"><a href="#说明-1" class="headerlink" title="说明"></a>说明</h3><ul>
 <li>OpenVPN的server配置里面添加了<code>crl-verify</code>之后，需要给crl定期更新</li>
