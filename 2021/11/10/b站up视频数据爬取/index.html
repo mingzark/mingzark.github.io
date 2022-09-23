@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mingzark.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="功能通过upid获取所有视频封面、bv号、作者名，通过bv号抓取标题、播放、以及三连数据，存入excel。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="b站up视频数据抓取">
+<meta property="og:url" content="https://mingzark.github.io/2021/11/10/b%E7%AB%99up%E8%A7%86%E9%A2%91%E6%95%B0%E6%8D%AE%E7%88%AC%E5%8F%96/index.html">
+<meta property="og:site_name" content="鱼丸粗面">
+<meta property="og:description" content="功能通过upid获取所有视频封面、bv号、作者名，通过bv号抓取标题、播放、以及三连数据，存入excel。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-11-10T08:05:39.000Z">
+<meta property="article:modified_time" content="2022-09-23T01:05:15.000Z">
+<meta property="article:author" content="赵明">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://mingzark.github.io/2021/11/10/b%E7%AB%99up%E8%A7%86%E9%A2%91%E6%95%B0%E6%8D%AE%E7%88%AC%E5%8F%96/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>b站up视频数据抓取 | 鱼丸粗面</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">鱼丸粗面</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">linux运维</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mingzark.github.io/2021/11/10/b%E7%AB%99up%E8%A7%86%E9%A2%91%E6%95%B0%E6%8D%AE%E7%88%AC%E5%8F%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="赵明">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="鱼丸粗面">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          b站up视频数据抓取
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-11-10 16:05:39" itemprop="dateCreated datePublished" datetime="2021-11-10T16:05:39+08:00">2021-11-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-09-23 09:05:15" itemprop="dateModified" datetime="2022-09-23T09:05:15+08:00">2022-09-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h1><p>通过upid获取所有视频封面、bv号、作者名，通过bv号抓取标题、播放、以及三连数据，存入excel。</p>
+<ul>
+<li><a id="more"></a>
+
+</li>
+</ul>
+<h1 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line">import json</span><br><span class="line">import os</span><br><span class="line">from bs4 import BeautifulSoup</span><br><span class="line">from openpyxl import Workbook</span><br><span class="line">import re</span><br></pre></td></tr></table></figure>
+
+<h1 id="文件下载"><a href="#文件下载" class="headerlink" title="文件下载"></a>文件下载</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">def dl(f_name, url):</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    根据url下载文件并保存</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    rep &#x3D; requests.get(url,timeout&#x3D;3)</span><br><span class="line">    if rep.status_code &#x3D;&#x3D; 200:</span><br><span class="line">        with open(f_name, &#39;wb&#39;) as f:</span><br><span class="line">            f.write(rep.content)</span><br></pre></td></tr></table></figure>
+
+<h1 id="数据转换"><a href="#数据转换" class="headerlink" title="数据转换"></a>数据转换</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">def get_realnum(str_num):</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    将40.2万播放类型的字符串转换为数字类型（low low low）。</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    num &#x3D; list(filter(lambda x: x in &#39;0123456789.&#39;, str_num))</span><br><span class="line">    if num:</span><br><span class="line">        if &#39;万&#39; in str_num:</span><br><span class="line">            num &#x3D; float(&#39;&#39;.join(num)) * 10000</span><br><span class="line">        else:</span><br><span class="line">            num &#x3D; float(&#39;&#39;.join(num))</span><br><span class="line">    else:</span><br><span class="line">        num &#x3D; 0</span><br><span class="line">    return int(num)</span><br></pre></td></tr></table></figure>
+
+<h1 id="数据存储"><a href="#数据存储" class="headerlink" title="数据存储"></a>数据存储</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">def print_bv_lists_excel(bv_author,bv_lists):</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    将视频播放数据按up名字存入excel。</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    wb &#x3D; Workbook()</span><br><span class="line">    wb.create_sheet(index&#x3D;0,title&#x3D;&#39;播放数据&#39;)</span><br><span class="line">    sheet&#x3D;wb[&#39;播放数据&#39;]</span><br><span class="line">    sheet.append([&#39;标题&#39;,&#39;播放&#39;,&#39;收藏&#39;,&#39;投币&#39;,&#39;点赞&#39;,&#39;BV号&#39;])</span><br><span class="line">    for data in bv_lists:</span><br><span class="line">        sheet.append(data)</span><br><span class="line">    wb.save(bv_author+&#39;.xlsx&#39;)</span><br></pre></td></tr></table></figure>
+
+<h1 id="封面下载"><a href="#封面下载" class="headerlink" title="封面下载"></a>封面下载</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">def dl_img(allvideo):</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    下载up所有视频封面，按bv号存入以up名字命名的文件夹中。</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    for each in allvideo:</span><br><span class="line">        print(each[&#39;pic&#39;])</span><br><span class="line">        r_author&#x3D;each[&#39;author&#39;]</span><br><span class="line">        r_name &#x3D; r_author + &#39;&#x2F;&#39; + each[&#39;bvid&#39;] + &#39;.jpg&#39;</span><br><span class="line">        if not os.path.exists(r_author):</span><br><span class="line">            os.mkdir(r_author)</span><br><span class="line">        dl(r_name,each[&#39;pic&#39;])</span><br></pre></td></tr></table></figure>
+
+<h1 id="使用bs4解析bv数据"><a href="#使用bs4解析bv数据" class="headerlink" title="使用bs4解析bv数据"></a>使用bs4解析bv数据</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">def get_bv_play_list(bvid):</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    获取当前bv号的标题、播放、以及三连数据。</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    url&#x3D;&#39;https:&#x2F;&#x2F;www.bilibili.com&#x2F;video&#x2F;&#39; + bvid</span><br><span class="line">    bv_play_list &#x3D; []</span><br><span class="line">    response&#x3D;requests.get(url,timeout&#x3D;3)</span><br><span class="line">    html&#x3D;response.text</span><br><span class="line">    soup &#x3D; BeautifulSoup(html, &#39;lxml&#39;)</span><br><span class="line">    h5_title &#x3D; soup.select(&#39;span[class^&#x3D;&quot;tit&quot;]&#39;)[0].get_text().strip()</span><br><span class="line">    h5_like &#x3D; get_realnum(soup.select(&#39;span[class&#x3D;&quot;like&quot;]&#39;)[0].get_text().strip())</span><br><span class="line">    h5_coin &#x3D; get_realnum(soup.select(&#39;span[class&#x3D;&quot;coin&quot;]&#39;)[0].get_text().strip())</span><br><span class="line">    h5_collect &#x3D; get_realnum(soup.select(&#39;span[class&#x3D;&quot;collect&quot;]&#39;)[0].get_text().strip())</span><br><span class="line">    h5_view &#x3D; get_realnum(soup.select(&#39;span[class&#x3D;&quot;view&quot;]&#39;)[0].get_text().strip())</span><br><span class="line">    bv_play_list.append((bvid,h5_title,h5_view,h5_collect,h5_coin,h5_like))</span><br><span class="line">    return bv_play_list</span><br></pre></td></tr></table></figure>
+
+<h1 id="抓取up视频数据"><a href="#抓取up视频数据" class="headerlink" title="抓取up视频数据"></a>抓取up视频数据</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">def get_vlist(upid&#x3D;&#39;2789978&#39;):</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    获取当前upid的视频封面、bv号、作者，返回列表。</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    url&#x3D;&#39;https:&#x2F;&#x2F;api.bilibili.com&#x2F;x&#x2F;space&#x2F;arc&#x2F;search?mid&#x3D;&#39;+upid</span><br><span class="line">    response&#x3D;requests.get(url,timeout&#x3D;3)</span><br><span class="line">    data&#x3D;json.loads(response.text)</span><br><span class="line">    allvideo&#x3D;[]</span><br><span class="line">    if data[&#39;code&#39;] &#x3D;&#x3D; 0:</span><br><span class="line">        r_pn&#x3D;int(int(data[&#39;data&#39;][&#39;page&#39;][&#39;count&#39;])&#x2F;50)+2</span><br><span class="line">        for pn in range(1,r_pn):</span><br><span class="line">            url&#x3D;&#39;https:&#x2F;&#x2F;api.bilibili.com&#x2F;x&#x2F;space&#x2F;arc&#x2F;search?ps&#x3D;50&amp;pn&#x3D;&#39; + str(pn) + &#39;&amp;mid&#x3D;&#39;+ upid</span><br><span class="line">            response &#x3D; requests.get(url,timeout&#x3D;3)</span><br><span class="line">            data &#x3D; json.loads(response.text)</span><br><span class="line">            allvideo.extend(data[&#39;data&#39;][&#39;list&#39;][&#39;vlist&#39;])</span><br><span class="line">        return allvideo</span><br></pre></td></tr></table></figure>
+
+<h1 id="表情包下载"><a href="#表情包下载" class="headerlink" title="表情包下载"></a>表情包下载</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">def get_emote():</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    下载表情包</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    url&#x3D;&#39;https:&#x2F;&#x2F;api.bilibili.com&#x2F;x&#x2F;emote&#x2F;user&#x2F;panel&#x2F;web?business&#x3D;reply&#39;</span><br><span class="line">    response&#x3D;requests.get(url,timeout&#x3D;3)</span><br><span class="line">    data&#x3D;json.loads(response.text)</span><br><span class="line">    lists&#x3D;data[&#39;data&#39;][&#39;packages&#39;]</span><br><span class="line">    emote_dir&#x3D;&#39;emote&#39;</span><br><span class="line">    if not os.path.exists(emote_dir):</span><br><span class="line">        os.mkdir(emote_dir)</span><br><span class="line">    for i in lists:</span><br><span class="line">        for emote in i[&#39;emote&#39;]:</span><br><span class="line">            pattern&#x3D;r&#39;^http&#39;</span><br><span class="line">            match&#x3D;re.match(pattern,emote[&#39;url&#39;])</span><br><span class="line">            if match !&#x3D; None:</span><br><span class="line">                name &#x3D; emote_dir + &#39;&#x2F;&#39; +  emote[&#39;text&#39;] + &#39;.jpg&#39;</span><br><span class="line">                dl(name,emote[&#39;url&#39;])</span><br></pre></td></tr></table></figure>
+
+<h1 id="main"><a href="#main" class="headerlink" title="main"></a>main</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">if __name__ &#x3D;&#x3D; &#39;__main__&#39;:</span><br><span class="line">    upid &#x3D; input(&#39;请输入B站up主id：&#39;)</span><br><span class="line">    allvideo&#x3D;get_vlist(upid)</span><br><span class="line">    a&#x3D;get_bv_play_list(&#39;BV1v3411z7k5&#39;)</span><br><span class="line">    print(a)</span><br><span class="line">    dl_img(allvideo)</span><br><span class="line">    bv_play_lists&#x3D;[]</span><br><span class="line">    for each in allvideo: #获取每个视频播放数据</span><br><span class="line">        print(each[&#39;bvid&#39;])</span><br><span class="line">        bv_play_list&#x3D;get_bv_play_list(each[&#39;bvid&#39;])</span><br><span class="line">        bv_play_lists.extend(bv_play_list)</span><br><span class="line">    bv_play_lists.sort(key&#x3D;lambda x:(x[2],x[3],x[4],x[5]),reverse&#x3D;True) #根据播放量、收藏、投币、点赞排序</span><br><span class="line">    bv_author &#x3D; allvideo[0][&#39;author&#39;]  # 获取视频作者</span><br><span class="line">    print_bv_lists_excel(bv_author,bv_play_lists)</span><br><span class="line">    emote&#x3D;get_emote() #下载通用表情包</span><br></pre></td></tr></table></figure>
+
+<h1 id="数据如下"><a href="#数据如下" class="headerlink" title="数据如下"></a>数据如下</h1><table>
+<thead>
+<tr>
+<th>标题</th>
+<th>播放</th>
+<th>收藏</th>
+<th>投币</th>
+<th>点赞</th>
+<th>BV号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>中华田园犬，爱吃香蕉却不会抢主人手上的，一定要放到地上才肯吃</td>
+<td>1062000</td>
+<td>5362</td>
+<td>9621</td>
+<td>45000</td>
+<td>BV1v4411y7o2</td>
+</tr>
+<tr>
+<td>中华田园犬，下雨天坐在门口等主人回家，雨越来越大它也不愿进家</td>
+<td>961000</td>
+<td>5181</td>
+<td>5216</td>
+<td>39000</td>
+<td>BV1RJ411j72Q</td>
+</tr>
+<tr>
+<td>田园犬小奶狗，一个多月就懂得看家护院，看见陌生人大胆冲上来吠</td>
+<td>796000</td>
+<td>3240</td>
+<td>2939</td>
+<td>24000</td>
+<td>BV14J411n7MQ</td>
+</tr>
+<tr>
+<td>连续3天冲我翻白眼狂吠的小奶狗，今天终于被我收拾了，真香！</td>
+<td>789000</td>
+<td>4604</td>
+<td>7255</td>
+<td>40000</td>
+<td>BV1aK4y1b7HH</td>
+</tr>
+<tr>
+<td>超凶小奶狗翻脸真快，昨天吃我罐头今天又吠我，最后被我妥妥收拾</td>
+<td>528000</td>
+<td>1333</td>
+<td>2953</td>
+<td>23000</td>
+<td>BV14k4y1r7dJ</td>
+</tr>
+<tr>
+<td>田园犬独生子，生平第一次吃狗粮，看看什么反应</td>
+<td>507000</td>
+<td>735</td>
+<td>693</td>
+<td>6491</td>
+<td>BV1t4411v7sS</td>
+</tr>
+</tbody></table>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/11/05/wordpress%E9%85%8D%E7%BD%AEcdn%E6%94%AF%E6%8C%81https/" rel="prev" title="wordpress配置cdn支持https">
+      <i class="fa fa-chevron-left"></i> wordpress配置cdn支持https
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD"><span class="nav-number">1.</span> <span class="nav-text">功能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BE%9D%E8%B5%96"><span class="nav-number">2.</span> <span class="nav-text">依赖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD"><span class="nav-number">3.</span> <span class="nav-text">文件下载</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%BD%AC%E6%8D%A2"><span class="nav-number">4.</span> <span class="nav-text">数据转换</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8"><span class="nav-number">5.</span> <span class="nav-text">数据存储</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%81%E9%9D%A2%E4%B8%8B%E8%BD%BD"><span class="nav-number">6.</span> <span class="nav-text">封面下载</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8bs4%E8%A7%A3%E6%9E%90bv%E6%95%B0%E6%8D%AE"><span class="nav-number">7.</span> <span class="nav-text">使用bs4解析bv数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8A%93%E5%8F%96up%E8%A7%86%E9%A2%91%E6%95%B0%E6%8D%AE"><span class="nav-number">8.</span> <span class="nav-text">抓取up视频数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A1%A8%E6%83%85%E5%8C%85%E4%B8%8B%E8%BD%BD"><span class="nav-number">9.</span> <span class="nav-text">表情包下载</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#main"><span class="nav-number">10.</span> <span class="nav-text">main</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%A6%82%E4%B8%8B"><span class="nav-number">11.</span> <span class="nav-text">数据如下</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">赵明</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">赵明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
