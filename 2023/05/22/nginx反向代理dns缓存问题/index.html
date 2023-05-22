@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>nginx反向代理dns缓存问题 | 鱼丸粗面</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="问题简介  example.com为cdn域名，ip是动态解析的，上线几天后，发现网站资源加载不出来，查看nginx日志发现资源全部超时了。查询nginx相关文档，确认nginx在启动加载配置文件时，会把域名接信息成ip，然后把IP缓存起来，以后会一直使用解析到的IP并且不会再更改，除非重新启动Nginx，Nginx才会重新解析域名。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nginx反向代理dns缓存问题">
+<meta property="og:url" content="https://mingzark.github.io/2023/05/22/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86dns%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="鱼丸粗面">
+<meta property="og:description" content="问题简介  example.com为cdn域名，ip是动态解析的，上线几天后，发现网站资源加载不出来，查看nginx日志发现资源全部超时了。查询nginx相关文档，确认nginx在启动加载配置文件时，会把域名接信息成ip，然后把IP缓存起来，以后会一直使用解析到的IP并且不会再更改，除非重新启动Nginx，Nginx才会重新解析域名。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-05-22T09:22:49.650Z">
+<meta property="article:modified_time" content="2023-05-22T08:47:55.000Z">
+<meta property="article:author" content="赵明">
+<meta property="article:tag" content="nginx">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="鱼丸粗面" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">鱼丸粗面</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://mingzark.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-nginx反向代理dns缓存问题" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/05/22/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86dns%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/" class="article-date">
+  <time class="dt-published" datetime="2023-05-22T09:22:49.650Z" itemprop="datePublished">2023-05-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/nginx/">nginx</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      nginx反向代理dns缓存问题
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<h1 id="问题简介"><a href="#问题简介" class="headerlink" title="问题简介"></a>问题简介</h1><blockquote>
+<p> example.com为cdn域名，ip是动态解析的，上线几天后，发现网站资源加载不出来，查看nginx日志发现资源全部超时了。查询nginx相关文档，确认nginx在启动加载配置文件时，会把域名接信息成ip，然后把IP缓存起来，以后会一直使用解析到的IP并且不会再更改，除非重新启动Nginx，Nginx才会重新解析域名。<span id="more"></span></p>
+</blockquote>
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><h2 id="第一种-使用nginx的resolver"><a href="#第一种-使用nginx的resolver" class="headerlink" title="第一种 使用nginx的resolver"></a>第一种 使用nginx的resolver</h2><ul>
+<li><p>默认nginx会使用&#x2F;etc&#x2F;resolv.conf下的域名服务器进行解析</p>
+</li>
+<li><p>可以通过在nginx配置文件中的http部分或者server部分设定如下配置</p>
+<blockquote>
+<p>server {</p>
+<p> resolver 100.100.2.136 100.100.2.138 valid&#x3D;3000s;</p>
+<p> resolver_timeout 3s;</p>
+<p>}</p>
+</blockquote>
+</li>
+<li><p>resolver 后面指定DNS服务器，可以指定多个，空格隔开</p>
+</li>
+<li><p>valid设置DNS缓存失效时间</p>
+</li>
+<li><p>resolver_timeout 指定解析域名时，DNS服务器的超时时间，建议3秒左右</p>
+</li>
+</ul>
+<blockquote>
+<p> 当resolver 后面跟多个DNS服务器时，一定要保证这些DNS服务器都是有效的，因为这种是负载均衡模式的，当DNS记录失效了(超过valid时间)，首先由第一个DNS服务器去解析，下一次继续失效时由第二个DNS服务器去解析，如有任何一个DNS服务器故障，那么这一次的解析会一直持续到resolver_timeout，然后解析失败，且日志报错解析不了域名，通过页面抛出502错误。</p>
+</blockquote>
+<h2 id="第二种-使用tengine"><a href="#第二种-使用tengine" class="headerlink" title="第二种 使用tengine"></a>第二种 使用tengine</h2><p> 版本2.1.2以上，Tengine的ngx_http_upstream_dynamic_module模块，提供了在运行时动态解析upstream中server域名的功能。</p>
+<blockquote>
+<p>upstream backend {<br>dynamic_resolve fallback&#x3D;stale fail_timeout&#x3D;30s;<br>server a.com;<br>server b.com;<br>}</p>
+</blockquote>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://mingzark.github.io/2023/05/22/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86dns%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/" data-id="clhyn3d080001qdm51l292100" data-title="nginx反向代理dns缓存问题" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/05/22/%E8%AF%B7%E6%B1%82header%E8%BF%87%E5%A4%A7springboot%E6%8A%A5400%E9%94%99%E8%AF%AF/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          请求header过大springboot报400错误
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/05/22/k8s%E9%83%A8%E7%BD%B2nacos%E9%9B%86%E7%BE%A4/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">k8s部署nacos集群</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/k8s/">k8s</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/nginx/">nginx</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/openvpn/">openvpn</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/springboot/">springboot</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wordpress/">wordpress</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/k8s/" rel="tag">k8s</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openvpn/" rel="tag">openvpn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/springboot/" rel="tag">springboot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wordpress/" rel="tag">wordpress</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/k8s/" style="font-size: 15px;">k8s</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/nginx/" style="font-size: 20px;">nginx</a> <a href="/tags/openvpn/" style="font-size: 10px;">openvpn</a> <a href="/tags/springboot/" style="font-size: 10px;">springboot</a> <a href="/tags/wordpress/" style="font-size: 10px;">wordpress</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/05/">五月 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/05/22/wordpress%E9%85%8D%E7%BD%AEcdn%E6%94%AF%E6%8C%81https/">wordpress配置cdn支持https</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/22/%E8%AF%B7%E6%B1%82header%E8%BF%87%E5%A4%A7springboot%E6%8A%A5400%E9%94%99%E8%AF%AF/">请求header过大springboot报400错误</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/22/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86dns%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/">nginx反向代理dns缓存问题</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/22/k8s%E9%83%A8%E7%BD%B2nacos%E9%9B%86%E7%BE%A4/">k8s部署nacos集群</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/22/nginx%E6%9B%BF%E6%8D%A2%E5%93%8D%E5%BA%94%E5%86%85%E5%AE%B9/">nginx替换响应内容</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 赵明<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
