@@ -417,4 +417,29 @@
         <tag>ES</tag>
       </tags>
   </entry>
+  <entry>
+    <title>nginx缓存配置</title>
+    <url>/2023/05/24/nginx%E7%BC%93%E5%AD%98%E9%85%8D%E7%BD%AE/</url>
+    <content><![CDATA[<h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><ul>
+<li>线上需要对第三方服务接口进行缓存，优化响应速度<span id="more"></span></li>
+<li>由于nginx缓存键值是存于内存中，先在内存中查询到缓存文件md5值，然后在硬盘读取对应缓存文件，所以多机部署不适用，会出现key_zone键值管理混乱情况，引入purge模块更为严重</li>
+</ul>
+<h1 id="准备操作"><a href="#准备操作" class="headerlink" title="准备操作"></a>准备操作</h1><h2 id="http模块"><a href="#http模块" class="headerlink" title="http模块"></a>http模块</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">proxy_cache_path /html/purge/cache levels=1:2 keys_zone=my_zone:100m inactive=60d max_size=25g;</span><br><span class="line">proxy_cache_path 路径 目录层级 空间名称：键值可用内存 缓存文件未访问失效时间 缓存文件所占空间最大值</span><br></pre></td></tr></table></figure>
+
+<h2 id="server模块"><a href="#server模块" class="headerlink" title="server模块"></a>server模块</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#对应location中添加配置</span><br><span class="line">proxy_cache my_zone;</span><br><span class="line">proxy_cache_bypass $http_pragma; #该指令用于配置Nginx服务器向客户端发送响应数据时，不从缓存中获取的条件。</span><br><span class="line">proxy_cache_valid 200 30d;</span><br><span class="line">proxy_cache_methods GET;</span><br><span class="line">proxy_cache_use_stale updating; #当缓存内容过期，有一个请求正在访问上游试图更新缓存时，其他请求直接使用过期内容返回客户端</span><br><span class="line">proxy_cache_key &quot;$request_uri&quot;; #缓存键值</span><br><span class="line">proxy_ignore_headers Expires Set-Cookie Cache-Control; #禁用上游服务器的某些响应字段，防止缓存不生效</span><br><span class="line">proxy_cache_background_update on; #客户端请求过期或正在更新的文件时，在完全下载更新的文件之前，所有请求都会返回旧文件，更新都将在后台完成</span><br><span class="line">proxy_cache_revalidate on; #在 NGINX 最初缓存它时附加到文件的 (Last-Modified) 标头中记录的时间以来文件有修改，服务器才发送完整的数据</span><br><span class="line">proxy_cache_lock on; #如果多个请求缓存未命中，则仅允许这些请求中的第一个去原始服务器取数据。其余请求等待响应完成后，再从缓存中提取文件。</span><br><span class="line">add_header X-Cached $upstream_cache_status; #在响应客户端时添加一个 X-Cache-Status HTTP 标头</span><br></pre></td></tr></table></figure>
+
+<h2 id="编译purge模块"><a href="#编译purge模块" class="headerlink" title="编译purge模块"></a>编译purge模块</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wget https://nginx.org/download/nginx-1.25.0.tar.gz</span><br><span class="line">wget http://labs.frickle.com/files/ngx_cache_purge-2.3.tar.gz</span><br><span class="line">重新编译nginx，nginx -V获取之前配置，添加如下purge模块</span><br><span class="line">./configure --prefix=/usr/local/nginx --user=nginx --group=nginx --with-http_ssl_module --with-http_v2_module --with-http_realip_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre --with-stream --with-stream_ssl_module --with-stream_realip_module --with-http_sub_module --add-module=./purge模块目录</span><br></pre></td></tr></table></figure>
+
+<h2 id="清除缓存配置"><a href="#清除缓存配置" class="headerlink" title="清除缓存配置"></a>清除缓存配置</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">location ~ /purge(/.*) &#123;</span><br><span class="line">         proxy_cache_purge my_zone $1$is_args$args; #此配置对应上面proxy_cache_key &quot;$request_uri&quot;配置</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">生成缓存</span><br><span class="line">/api/getId</span><br><span class="line">清除缓存</span><br><span class="line">/purge/api/getId</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>nginx</category>
+      </categories>
+      <tags>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
 </search>

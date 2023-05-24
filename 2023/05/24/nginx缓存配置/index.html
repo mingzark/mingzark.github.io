@@ -19,28 +19,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"mingzark.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="问题在Kubernetes集群中有部分服务无法访问集群暴露出去的SLB。">
+    <meta name="description" content="说明 线上需要对第三方服务接口进行缓存，优化响应速度">
 <meta property="og:type" content="article">
-<meta property="og:title" content="pod访问同一集群下的nginx-controller的SLB不通">
-<meta property="og:url" content="https://mingzark.github.io/2023/05/22/pod%E8%AE%BF%E9%97%AE%E5%90%8C%E4%B8%80%E9%9B%86%E7%BE%A4%E4%B8%8B%E7%9A%84nginx-controller%E7%9A%84SLB%E4%B8%8D%E9%80%9A/index.html">
+<meta property="og:title" content="nginx缓存配置">
+<meta property="og:url" content="https://mingzark.github.io/2023/05/24/nginx%E7%BC%93%E5%AD%98%E9%85%8D%E7%BD%AE/index.html">
 <meta property="og:site_name" content="鱼丸粗面">
-<meta property="og:description" content="问题在Kubernetes集群中有部分服务无法访问集群暴露出去的SLB。">
+<meta property="og:description" content="说明 线上需要对第三方服务接口进行缓存，优化响应速度">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-05-22T09:47:42.175Z">
-<meta property="article:modified_time" content="2023-05-22T09:47:18.000Z">
+<meta property="article:published_time" content="2023-05-24T08:18:16.453Z">
+<meta property="article:modified_time" content="2023-05-24T08:11:53.000Z">
 <meta property="article:author" content="赵明">
-<meta property="article:tag" content="k8s">
+<meta property="article:tag" content="nginx">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://mingzark.github.io/2023/05/22/pod%E8%AE%BF%E9%97%AE%E5%90%8C%E4%B8%80%E9%9B%86%E7%BE%A4%E4%B8%8B%E7%9A%84nginx-controller%E7%9A%84SLB%E4%B8%8D%E9%80%9A/">
+<link rel="canonical" href="https://mingzark.github.io/2023/05/24/nginx%E7%BC%93%E5%AD%98%E9%85%8D%E7%BD%AE/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://mingzark.github.io/2023/05/22/pod%E8%AE%BF%E9%97%AE%E5%90%8C%E4%B8%80%E9%9B%86%E7%BE%A4%E4%B8%8B%E7%9A%84nginx-controller%E7%9A%84SLB%E4%B8%8D%E9%80%9A/","path":"2023/05/22/pod访问同一集群下的nginx-controller的SLB不通/","title":"pod访问同一集群下的nginx-controller的SLB不通"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://mingzark.github.io/2023/05/24/nginx%E7%BC%93%E5%AD%98%E9%85%8D%E7%BD%AE/","path":"2023/05/24/nginx缓存配置/","title":"nginx缓存配置"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>pod访问同一集群下的nginx-controller的SLB不通 | 鱼丸粗面</title>
+<title>nginx缓存配置 | 鱼丸粗面</title>
   
 
 
@@ -139,7 +139,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">2.</span> <span class="nav-text">解决方案</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E6%93%8D%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text">准备操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#http%E6%A8%A1%E5%9D%97"><span class="nav-number">2.1.</span> <span class="nav-text">http模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#server%E6%A8%A1%E5%9D%97"><span class="nav-number">2.2.</span> <span class="nav-text">server模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91purge%E6%A8%A1%E5%9D%97"><span class="nav-number">2.3.</span> <span class="nav-text">编译purge模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%85%E9%99%A4%E7%BC%93%E5%AD%98%E9%85%8D%E7%BD%AE"><span class="nav-number">2.4.</span> <span class="nav-text">清除缓存配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">2.5.</span> <span class="nav-text">示例</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -190,7 +190,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://mingzark.github.io/2023/05/22/pod%E8%AE%BF%E9%97%AE%E5%90%8C%E4%B8%80%E9%9B%86%E7%BE%A4%E4%B8%8B%E7%9A%84nginx-controller%E7%9A%84SLB%E4%B8%8D%E9%80%9A/">
+    <link itemprop="mainEntityOfPage" href="https://mingzark.github.io/2023/05/24/nginx%E7%BC%93%E5%AD%98%E9%85%8D%E7%BD%AE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -203,12 +203,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="pod访问同一集群下的nginx-controller的SLB不通 | 鱼丸粗面">
+      <meta itemprop="name" content="nginx缓存配置 | 鱼丸粗面">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          pod访问同一集群下的nginx-controller的SLB不通
+          nginx缓存配置
         </h1>
 
         <div class="post-meta-container">
@@ -220,7 +220,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2023-05-22 17:47:42 / 修改时间：17:47:18" itemprop="dateCreated datePublished" datetime="2023-05-22T17:47:42+08:00">2023-05-22</time>
+      <time title="创建时间：2023-05-24 16:18:16 / 修改时间：16:11:53" itemprop="dateCreated datePublished" datetime="2023-05-24T16:18:16+08:00">2023-05-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -228,7 +228,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/k8s/" itemprop="url" rel="index"><span itemprop="name">k8s</span></a>
+          <a href="/categories/nginx/" itemprop="url" rel="index"><span itemprop="name">nginx</span></a>
         </span>
     </span>
 
@@ -241,12 +241,20 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>在Kubernetes集群中有部分服务无法访问集群暴露出去的SLB。<span id="more"></span></p>
-<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><blockquote>
-<p> SLB设置了<code>externalTrafficPolicy: Local</code>类型，这种类型的SLB地址只有在Node中部署了对应的后端Pod，才能被访问。因为SLB的地址是集群外使用，如果集群节点和Pod不能直接访问，请求不会到SLB，会被当作Service的扩展IP地址，被kube-proxy的iptables或ipvs转发。如果刚好集群节点或者Pod所在的节点上没有相应的后端服务Pod，就会发生网络不通的问题，而如果有相应的后端服务Pod，是可以正常访问。</p>
-<p> 将LoadBalancer的Service中的externalTrafficPolicy修改为Cluster，但是在应用中会丢失源IP。</p>
-<p> 参考<a target="_blank" rel="noopener" href="https://help.aliyun.com/knowledge_detail/171437.html?spm=5176.smartservice_service_chat.0.0.7f95709asvYshC">https://help.aliyun.com/knowledge_detail/171437.html?spm=5176.smartservice_service_chat.0.0.7f95709asvYshC</a></p>
-</blockquote>
+    <div class="post-body" itemprop="articleBody"><h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><ul>
+<li>线上需要对第三方服务接口进行缓存，优化响应速度<span id="more"></span></li>
+<li>由于nginx缓存键值是存于内存中，先在内存中查询到缓存文件md5值，然后在硬盘读取对应缓存文件，所以多机部署不适用，会出现key_zone键值管理混乱情况，引入purge模块更为严重</li>
+</ul>
+<h1 id="准备操作"><a href="#准备操作" class="headerlink" title="准备操作"></a>准备操作</h1><h2 id="http模块"><a href="#http模块" class="headerlink" title="http模块"></a>http模块</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">proxy_cache_path /html/purge/cache levels=1:2 keys_zone=my_zone:100m inactive=60d max_size=25g;</span><br><span class="line">proxy_cache_path 路径 目录层级 空间名称：键值可用内存 缓存文件未访问失效时间 缓存文件所占空间最大值</span><br></pre></td></tr></table></figure>
+
+<h2 id="server模块"><a href="#server模块" class="headerlink" title="server模块"></a>server模块</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#对应location中添加配置</span><br><span class="line">proxy_cache my_zone;</span><br><span class="line">proxy_cache_bypass $http_pragma; #该指令用于配置Nginx服务器向客户端发送响应数据时，不从缓存中获取的条件。</span><br><span class="line">proxy_cache_valid 200 30d;</span><br><span class="line">proxy_cache_methods GET;</span><br><span class="line">proxy_cache_use_stale updating; #当缓存内容过期，有一个请求正在访问上游试图更新缓存时，其他请求直接使用过期内容返回客户端</span><br><span class="line">proxy_cache_key &quot;$request_uri&quot;; #缓存键值</span><br><span class="line">proxy_ignore_headers Expires Set-Cookie Cache-Control; #禁用上游服务器的某些响应字段，防止缓存不生效</span><br><span class="line">proxy_cache_background_update on; #客户端请求过期或正在更新的文件时，在完全下载更新的文件之前，所有请求都会返回旧文件，更新都将在后台完成</span><br><span class="line">proxy_cache_revalidate on; #在 NGINX 最初缓存它时附加到文件的 (Last-Modified) 标头中记录的时间以来文件有修改，服务器才发送完整的数据</span><br><span class="line">proxy_cache_lock on; #如果多个请求缓存未命中，则仅允许这些请求中的第一个去原始服务器取数据。其余请求等待响应完成后，再从缓存中提取文件。</span><br><span class="line">add_header X-Cached $upstream_cache_status; #在响应客户端时添加一个 X-Cache-Status HTTP 标头</span><br></pre></td></tr></table></figure>
+
+<h2 id="编译purge模块"><a href="#编译purge模块" class="headerlink" title="编译purge模块"></a>编译purge模块</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">wget https://nginx.org/download/nginx-1.25.0.tar.gz</span><br><span class="line">wget http://labs.frickle.com/files/ngx_cache_purge-2.3.tar.gz</span><br><span class="line">重新编译nginx，nginx -V获取之前配置，添加如下purge模块</span><br><span class="line">./configure --prefix=/usr/local/nginx --user=nginx --group=nginx --with-http_ssl_module --with-http_v2_module --with-http_realip_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre --with-stream --with-stream_ssl_module --with-stream_realip_module --with-http_sub_module --add-module=./purge模块目录</span><br></pre></td></tr></table></figure>
+
+<h2 id="清除缓存配置"><a href="#清除缓存配置" class="headerlink" title="清除缓存配置"></a>清除缓存配置</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">location ~ /purge(/.*) &#123;</span><br><span class="line">         proxy_cache_purge my_zone $1$is_args$args; #此配置对应上面proxy_cache_key &quot;$request_uri&quot;配置</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">生成缓存</span><br><span class="line">/api/getId</span><br><span class="line">清除缓存</span><br><span class="line">/purge/api/getId</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -256,21 +264,18 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/k8s/" rel="tag"># k8s</a>
+              <a href="/tags/nginx/" rel="tag"># nginx</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/05/22/wordpress%E9%85%8D%E7%BD%AEcdn%E6%94%AF%E6%8C%81https/" rel="prev" title="wordpress配置cdn支持https">
-                  <i class="fa fa-chevron-left"></i> wordpress配置cdn支持https
+                <a href="/2023/05/22/b%E7%AB%99up%E8%A7%86%E9%A2%91%E6%95%B0%E6%8D%AE%E6%8A%93%E5%8F%96/" rel="prev" title="b站up视频数据抓取">
+                  <i class="fa fa-chevron-left"></i> b站up视频数据抓取
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/05/22/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86dns%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/" rel="next" title="nginx反向代理dns缓存问题">
-                  nginx反向代理dns缓存问题 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
