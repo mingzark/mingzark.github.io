@@ -19,28 +19,29 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"mingzark.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="问题 wordpress默认通过http访问，修改配置使支持https。">
+    <meta name="description" content="说明 K8S自身带有优雅终止Pod容器的机制">
 <meta property="og:type" content="article">
-<meta property="og:title" content="wordpress配置cdn支持https">
-<meta property="og:url" content="https://mingzark.github.io/2023/05/22/wordpress%E9%85%8D%E7%BD%AEcdn%E6%94%AF%E6%8C%81https/index.html">
+<meta property="og:title" content="基于nacos的优雅上线">
+<meta property="og:url" content="https://mingzark.github.io/2023/09/26/%E5%9F%BA%E4%BA%8Enacos%E7%9A%84%E4%BC%98%E9%9B%85%E4%B8%8A%E7%BA%BF/index.html">
 <meta property="og:site_name" content="鱼丸粗面">
-<meta property="og:description" content="问题 wordpress默认通过http访问，修改配置使支持https。">
+<meta property="og:description" content="说明 K8S自身带有优雅终止Pod容器的机制">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-05-22T09:22:49.651Z">
-<meta property="article:modified_time" content="2023-05-22T05:44:57.000Z">
+<meta property="article:published_time" content="2023-09-26T05:43:27.741Z">
+<meta property="article:modified_time" content="2023-09-26T05:42:18.000Z">
 <meta property="article:author" content="赵明">
-<meta property="article:tag" content="wordpress">
+<meta property="article:tag" content="k8s">
+<meta property="article:tag" content="nacos">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://mingzark.github.io/2023/05/22/wordpress%E9%85%8D%E7%BD%AEcdn%E6%94%AF%E6%8C%81https/">
+<link rel="canonical" href="https://mingzark.github.io/2023/09/26/%E5%9F%BA%E4%BA%8Enacos%E7%9A%84%E4%BC%98%E9%9B%85%E4%B8%8A%E7%BA%BF/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://mingzark.github.io/2023/05/22/wordpress%E9%85%8D%E7%BD%AEcdn%E6%94%AF%E6%8C%81https/","path":"2023/05/22/wordpress配置cdn支持https/","title":"wordpress配置cdn支持https"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://mingzark.github.io/2023/09/26/%E5%9F%BA%E4%BA%8Enacos%E7%9A%84%E4%BC%98%E9%9B%85%E4%B8%8A%E7%BA%BF/","path":"2023/09/26/基于nacos的优雅上线/","title":"基于nacos的优雅上线"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>wordpress配置cdn支持https | 鱼丸粗面</title>
+<title>基于nacos的优雅上线 | 鱼丸粗面</title>
   
 
 
@@ -139,7 +140,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">解决方法</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%85%8D%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">微服务配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#k8s%E9%A2%84%E5%81%9C%E6%AD%A2%E8%84%9A%E6%9C%AC"><span class="nav-number">3.</span> <span class="nav-text">k8s预停止脚本</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -190,7 +191,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://mingzark.github.io/2023/05/22/wordpress%E9%85%8D%E7%BD%AEcdn%E6%94%AF%E6%8C%81https/">
+    <link itemprop="mainEntityOfPage" href="https://mingzark.github.io/2023/09/26/%E5%9F%BA%E4%BA%8Enacos%E7%9A%84%E4%BC%98%E9%9B%85%E4%B8%8A%E7%BA%BF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -203,12 +204,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="wordpress配置cdn支持https | 鱼丸粗面">
+      <meta itemprop="name" content="基于nacos的优雅上线 | 鱼丸粗面">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          wordpress配置cdn支持https
+          基于nacos的优雅上线
         </h1>
 
         <div class="post-meta-container">
@@ -220,7 +221,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2023-05-22 17:22:49 / 修改时间：13:44:57" itemprop="dateCreated datePublished" datetime="2023-05-22T17:22:49+08:00">2023-05-22</time>
+      <time title="创建时间：2023-09-26 13:43:27 / 修改时间：13:42:18" itemprop="dateCreated datePublished" datetime="2023-09-26T13:43:27+08:00">2023-09-26</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -228,7 +229,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/wordpress/" itemprop="url" rel="index"><span itemprop="name">wordpress</span></a>
+          <a href="/categories/k8s/" itemprop="url" rel="index"><span itemprop="name">k8s</span></a>
         </span>
     </span>
 
@@ -241,24 +242,18 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><ul>
-<li>wordpress默认通过http访问，修改配置使支持https。<span id="more"></span></li>
+    <div class="post-body" itemprop="articleBody"><h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><ul>
+<li>K8S自身带有优雅终止Pod容器的机制<span id="more"></span>，对于请求通过k8s的service层到达pod容器的情况，可以通过k8s滚动更新机制，做到业务”无感知”。但是目前线上pod服务主动注册到nacos，业务方通过gateway+nacos调用pod服务，即调用请求绕过了k8s的service层，在pod容器更新期间，老pod已经优雅终止掉了，但gateway网关缓存还没更新，调用请求会在网关缓存未完全更新之前打到已经终止掉的pod地址，这就会出现连接超时，调用失败错误，从而造成业务流量损失。</li>
 </ul>
-<h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><p>1、进入WP后台，进入设置-常规 将WordPress地址（URL）、站点地址（URL）两项修改为：https。 或者更改数据库wp_option第1，2行http协议。</p>
-<p>2、修改网站根目录下wp-config.php</p>
-<p>在<code>\* @package WordPress</code>后面添加（不可在最后添加）：</p>
-<blockquote>
-<p>&#96;&#x2F;* 强制后台和登录使用 SSL *&#x2F;</p>
-<p>$_SERVER[‘HTTPS’] &#x3D; ‘on’;</p>
-<p>define(‘FORCE_SSL_LOGIN’, true);</p>
-<p>define(‘FORCE_SSL_ADMIN’, true);</p>
-</blockquote>
-<p>3、修改&#x2F;wp-includes&#x2F;load.php中的function is_ssl()，将文件里$_SERVER[‘HTTPS’]全部修改为$_SERVER[“HTTP_FROM_HTTPS”]，将最后一行的return false 更改为return true</p>
-<p>4、更改之前添加的多媒体文件地址，博客地址换为自己的域名</p>
-<blockquote>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update wp_posts set post_content = replace(post_content, &#x27;http://博客地址&#x27;,&#x27;https://博客地址&#x27;)</span><br></pre></td></tr></table></figure>
-</blockquote>
-<p>5、cdn配置https证书，开启https强制跳转。</p>
+<h1 id="微服务配置"><a href="#微服务配置" class="headerlink" title="微服务配置"></a>微服务配置</h1><p>1、修改微服务的nacos的心跳配置时间</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  cloud:</span><br><span class="line">    nacos:</span><br><span class="line">      discovery:</span><br><span class="line">        server-addr: 127.0.0.1:8848</span><br><span class="line">        metadata: </span><br><span class="line">          preserved.heart.beat.interval: 1000 #心跳上报时间间隔，默认30s</span><br><span class="line">          preserved.heart.beat.timeout: 3000 #不发送心跳后，从健康到不健康的时间</span><br><span class="line">          preserved.ip.delete.timeout: 3000 #不发送心跳后，从nacos摘掉实例的时间</span><br></pre></td></tr></table></figure>
+
+<p>2、修改spring cloud的gateway的ribbion配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ribbon:</span><br><span class="line">  ServerListRefreshInterval: 3000</span><br><span class="line">  #gateway ribbion默认定时去nacos拉取最新的服务实例数据到本地缓存，因此，仅仅修改nacos的配置，还是不能保证能及时的进行服务上下线，需要设置ribbon.ServerListRefreshInterval，增加拉取nacos中最新服务实例的频率</span><br></pre></td></tr></table></figure>
+
+<h1 id="k8s预停止脚本"><a href="#k8s预停止脚本" class="headerlink" title="k8s预停止脚本"></a>k8s预停止脚本</h1><p>设置Prestop钩子，在Pod容器终止之前，在Prestop里通过nacos提供的API接口，主动摘除nacos注册。接着sleep 3秒，用于刷新nacos网关缓存，摘除下线的pod服务。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#关闭服务前通过prestop钩子将服务从nacos下线</span><br><span class="line">curl -X PUT &quot;$NACOS_SERVER:8848/nacos/v1/ns/instance?serviceName=$MY_SERVICE_NAME&amp;groupName=yyy&amp;ip=$MY_POD_IP&amp;port=$MY_POD_PORT&amp;enabled=false&amp;namespaceId=$NACOS_NAMESPACE&quot;</span><br><span class="line">#等待3s，刷新gateway缓存</span><br><span class="line">sleep 3</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -268,21 +263,19 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/wordpress/" rel="tag"># wordpress</a>
+              <a href="/tags/k8s/" rel="tag"># k8s</a>
+              <a href="/tags/nacos/" rel="tag"># nacos</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/05/22/%E8%AF%B7%E6%B1%82header%E8%BF%87%E5%A4%A7springboot%E6%8A%A5400%E9%94%99%E8%AF%AF/" rel="prev" title="请求header过大springboot报400错误">
-                  <i class="fa fa-chevron-left"></i> 请求header过大springboot报400错误
+                <a href="/2023/06/25/elasticsearch%E9%80%9A%E8%BF%87logstash%E5%90%8C%E6%AD%A5mysql/" rel="prev" title="elasticsearch通过logstash同步mysql">
+                  <i class="fa fa-chevron-left"></i> elasticsearch通过logstash同步mysql
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/05/22/pod%E8%AE%BF%E9%97%AE%E5%90%8C%E4%B8%80%E9%9B%86%E7%BE%A4%E4%B8%8B%E7%9A%84nginx-controller%E7%9A%84SLB%E4%B8%8D%E9%80%9A/" rel="next" title="pod访问同一集群下的nginx-controller的SLB不通">
-                  pod访问同一集群下的nginx-controller的SLB不通 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>

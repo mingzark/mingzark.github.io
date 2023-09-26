@@ -453,4 +453,28 @@
         <tag>nginx</tag>
       </tags>
   </entry>
+  <entry>
+    <title>基于nacos的优雅上线</title>
+    <url>/2023/09/26/%E5%9F%BA%E4%BA%8Enacos%E7%9A%84%E4%BC%98%E9%9B%85%E4%B8%8A%E7%BA%BF/</url>
+    <content><![CDATA[<h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><ul>
+<li>K8S自身带有优雅终止Pod容器的机制<span id="more"></span>，对于请求通过k8s的service层到达pod容器的情况，可以通过k8s滚动更新机制，做到业务”无感知”。但是目前线上pod服务主动注册到nacos，业务方通过gateway+nacos调用pod服务，即调用请求绕过了k8s的service层，在pod容器更新期间，老pod已经优雅终止掉了，但gateway网关缓存还没更新，调用请求会在网关缓存未完全更新之前打到已经终止掉的pod地址，这就会出现连接超时，调用失败错误，从而造成业务流量损失。</li>
+</ul>
+<h1 id="微服务配置"><a href="#微服务配置" class="headerlink" title="微服务配置"></a>微服务配置</h1><p>1、修改微服务的nacos的心跳配置时间</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">spring:</span><br><span class="line">  cloud:</span><br><span class="line">    nacos:</span><br><span class="line">      discovery:</span><br><span class="line">        server-addr: 127.0.0.1:8848</span><br><span class="line">        metadata: </span><br><span class="line">          preserved.heart.beat.interval: 1000 #心跳上报时间间隔，默认30s</span><br><span class="line">          preserved.heart.beat.timeout: 3000 #不发送心跳后，从健康到不健康的时间</span><br><span class="line">          preserved.ip.delete.timeout: 3000 #不发送心跳后，从nacos摘掉实例的时间</span><br></pre></td></tr></table></figure>
+
+<p>2、修改spring cloud的gateway的ribbion配置</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ribbon:</span><br><span class="line">  ServerListRefreshInterval: 3000</span><br><span class="line">  #gateway ribbion默认定时去nacos拉取最新的服务实例数据到本地缓存，因此，仅仅修改nacos的配置，还是不能保证能及时的进行服务上下线，需要设置ribbon.ServerListRefreshInterval，增加拉取nacos中最新服务实例的频率</span><br></pre></td></tr></table></figure>
+
+<h1 id="k8s预停止脚本"><a href="#k8s预停止脚本" class="headerlink" title="k8s预停止脚本"></a>k8s预停止脚本</h1><p>设置Prestop钩子，在Pod容器终止之前，在Prestop里通过nacos提供的API接口，主动摘除nacos注册。接着sleep 3秒，用于刷新nacos网关缓存，摘除下线的pod服务。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#关闭服务前通过prestop钩子将服务从nacos下线</span><br><span class="line">curl -X PUT &quot;$NACOS_SERVER:8848/nacos/v1/ns/instance?serviceName=$MY_SERVICE_NAME&amp;groupName=yyy&amp;ip=$MY_POD_IP&amp;port=$MY_POD_PORT&amp;enabled=false&amp;namespaceId=$NACOS_NAMESPACE&quot;</span><br><span class="line">#等待3s，刷新gateway缓存</span><br><span class="line">sleep 3</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>k8s</category>
+      </categories>
+      <tags>
+        <tag>k8s</tag>
+        <tag>nacos</tag>
+      </tags>
+  </entry>
 </search>
